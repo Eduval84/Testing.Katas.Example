@@ -69,16 +69,5 @@ namespace Testing.Katas.Example.XUnit
             Assert.True(PasswordVerifier.Verify(validLengthpassword));
         }
 
-        /// <summary>
-        /// password should be larger than 8 chars
-        /// </summary>
-        [Fact]
-        public void VerifyPasswordIsLargerThan8Chars()
-        {
-            string validLengthpassword = "PruebaPas12";
-
-            Assert.True(PasswordVerifier.Verify(validLengthpassword));
-        }
-
     }
 }
