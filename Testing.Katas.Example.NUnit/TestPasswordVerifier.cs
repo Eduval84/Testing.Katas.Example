@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 
 namespace Testing.Katas.Example.Test
 {
@@ -8,113 +9,37 @@ namespace Testing.Katas.Example.Test
     public class TestPasswordVerifier
     {
 
-        /// <summary>
-        /// Verify password should not be null or empty.
-        /// </summary>
-        /// <param name="password">String to test.</param>  
-        /// <param name="expectedResult">The expected result.</param>
-        [TestCase("ValidPassword12", true)]
-        [TestCase("inValidPasswordwithoutnumber", false)]
-        [TestCase("invalidpass12withoutupperletter", false)]
-        [TestCase("INVALIDPASS12WITHOUTLOWERLETTER", false)]
-        [Test]
-        public void VerifyValidPassword(string password, bool expectedResult)
+        private readonly IEnumerable<IRule> rules = new IRule[]
         {
-            var result = PasswordVerifier.Verify(password);
+            new MoreThanEightCharacters(),
+            new ContainsAtLeastOneUppercaseCharacter(),
+            new ContainsAtLeastOneLowercaseCharacter(),
+            new ContainsAtLeastOneNumber()
+        };
 
-            Assert.That(expectedResult, Is.EqualTo(result));
+        [TestCase("ValidPass12", "Valid")]
+        public void Should_verify_password(string password, string expectation)
+        {
+            var verifier = new PasswordVerifier(rules, password);
+            Assert.AreEqual(verifier.Verify(), expectation);
         }
 
-        /// <summary>
-        /// Verify password should not be null or empty.
-        /// </summary>
-        /// <param name="nullPassword">String to test.</param>             
-        [TestCase(null)]
-        [TestCase("")]        
-        [Test]
-        public void VerifyPasswordNotBeNullorEmpty(string nullPassword)
+        [TestCase("short1", "Password should be at least 8 characters")]
+        [TestCase("1passwithoutupper", "Password should contain at least one uppercase character")]
+        [TestCase("1PASSWITHOUTLOWER", "Password should contain at least one lowercase character")]
+        [TestCase("Passwithoutnumber", "Password should contain at least one number")]
+        public void Passwords_throws_exception_if_conditions_not_met(string password, string exceptation)
         {
-
-            Assert.Throws<ArgumentNullException>(() => PasswordVerifier.Verify(nullPassword));
-
+            var verifier = new PasswordVerifier(rules, password);
+            var ex = Assert.Throws<IncorrectPassword>(() => verifier.Verify());
+            Assert.That(ex.Message, Is.EqualTo(exceptation));
         }
 
-        /// <summary>
-        /// Verify password Lenght. 
-        /// Verify password should be larger than 8 chars.
-        /// </summary>
-        /// <param name="validLength">String to test.</param>      
-        /// <param name="expectedResult">The expected result.</param>
-        [TestCase("Password12", true)]
         [Test]
-        public void VerifyPasswordIsLargerThan8Chars(string validLength, bool expectedResult)
+        public void Should_return_invalid_for_null_passwords()
         {
-            var result = PasswordVerifier.Verify(validLength);
-
-            Assert.That(expectedResult, Is.EqualTo(result));
-        }
-
-        /// <summary>
-        /// Verify password Lenght. 
-        /// Verify password should be larger than 8 chars.
-        /// </summary>
-        /// <param name="inValidLength">String to test.</param>  
-        /// <param name="expectedResult">The expected result.</param>
-        [TestCase("Password", false)]
-        [TestCase("Pass",false)]
-        [Test]
-        public void VerifyPasswordIsNotLargerThan8Chars(string inValidLength, bool expectedResult)
-        {
-            var result = PasswordVerifier.Verify(inValidLength);
-
-            Assert.That(expectedResult, Is.EqualTo(result));
-        }
-
-        /// <summary>
-        /// Verify password format should have one upper letter at least
-        /// </summary>
-        /// <param name="password">String to test.</param>      
-        /// <param name="expectedResult">The expected result.</param>    
-        [TestCase("passWhitUpperLetter12", true)]
-        [TestCase("passwhitoutupperletter12", false)]
-        [Test]
-        public void VerifyPasswordShouldHaveOneUppercaseLetterAtLeast(string password, bool expectedResult)
-        {
-            var result = PasswordVerifier.Verify(password);
-
-            Assert.That(expectedResult, Is.EqualTo(result));
-        }
-
-        /// <summary>
-        /// Verify password format and should have one lower letter at least
-        /// </summary>
-        /// <param name="password">String to test.</param>      
-        /// <param name="expectedResult">The expected result.</param>
-        [TestCase("PassWithLowLetter12", true)]
-        [TestCase("PASSWITHOUTLOWERLETTER12", false)]
-        [Test]
-        public void VerifyPasswordShouldHaveOneLowercaseLetterAtLeast(string password, bool expectedResult)
-        {
-            var result = PasswordVerifier.Verify(password);
-
-            Assert.That(expectedResult, Is.EqualTo(result));
-        }
-
-        /// <summary>
-        /// Verify password format and should have one number at least
-        /// </summary>
-        /// <param name="password">String to test.</param>      
-        /// <param name="expectedResult">The expected result.</param>
-        //[TestCase("PASSWITHOUTLOWERLETTER", false)]
-        [TestCase("PassValid12", true)]
-        [TestCase("Pass69Valid", true)]
-        [TestCase("PassInvalid", false)]
-        [Test]
-        public void VerifyPasswordShouldHaveOneNumberAtLeast(string password, bool expectedResult)
-        {
-            var result = PasswordVerifier.Verify(password);
-
-            Assert.That(expectedResult, Is.EqualTo(result));
+            var ex = Assert.Throws<IncorrectPassword>(() => new PasswordVerifier(rules, null));
+            Assert.AreEqual(ex.Message, "Password is null or empty");
         }
 
     }

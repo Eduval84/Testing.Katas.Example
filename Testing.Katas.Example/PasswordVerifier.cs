@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Eduardo Valderrama
 
+using System.Runtime.Serialization;
+
 namespace Testing.Katas.Example
 {
     /// <summary>
@@ -8,54 +10,120 @@ namespace Testing.Katas.Example
     public class PasswordVerifier
     {
 
-        /// <summary>
-        /// Verifies the specified password.
-        /// </summary>
-        /// <param name="password">The password.</param>
-        /// <returns>Bool indicates if password is valid</returns>
-        public static bool Verify(string password)
-        {
-            bool correctPassword = true;
+        private readonly Dictionary<IRule, bool> conditionsToVerify;
 
-            IsPasswordPassedNullOrEmptyRule(password);            
-            if (IsPasswordPassedLengthRule(password, 8) == false)
-                return false;
-            if (PasswordHaveOneUpperCaseLetterAtLeast(password) == false)
-                return false;
-            if (PasswordHaveOneLowerCaseLetterAtLeast(password) == false)
-                return false;
-            if (PasswordHaveOneNumberAtLeast(password) == false)
-                return false;
-
-            return correctPassword;
-        }
-            
-
-        private static bool IsPasswordPassedNullOrEmptyRule(string password)
+        public PasswordVerifier(IEnumerable<IRule> rules, string password)
         {
             if (string.IsNullOrEmpty(password))
-                throw new ArgumentNullException("Null or Empty Rule Violation. Password should not be null or empty");
-            return true;
+                throw new IncorrectPassword("Password is null or empty");
+
+            conditionsToVerify = new Dictionary<IRule, bool>();
+
+
+            foreach (var rule in rules)
+            {
+                conditionsToVerify.Add(rule, rule.ConditionToValidate(password));
+            }
         }
 
-        private static bool IsPasswordPassedLengthRule(string password, int minlength)
+        public string Verify()
         {
-            return (password.Length > minlength) ;            
+            ErrorMessage();
+            return Validation();
         }
 
-        private static bool PasswordHaveOneUpperCaseLetterAtLeast(string password)
+        private string Validation()
         {
-            return (password.Any(char.IsUpper));               
+            return ConditionChecker() >=3 ? "Valid" : "Invalid";
         }
 
-        private static bool PasswordHaveOneLowerCaseLetterAtLeast(string password)
+        private int ConditionChecker()
         {
-            return (password.Any(char.IsLower));                
+            return conditionsToVerify.Values.Count(value => value.Equals(true));
         }
 
-        private static bool PasswordHaveOneNumberAtLeast(string password)
+        private void ErrorMessage()
         {
-            return (password.Any(char.IsNumber));
+            var key = conditionsToVerify.Where(failingRule => failingRule.Value == false)
+                .Select(failingRule => failingRule.Key).ToList();
+
+            if (key.Any())
+                throw new IncorrectPassword(key.First().ExceptionMessage);
         }
+    }
+
+    public class ContainsAtLeastOneUppercaseCharacter : IRule
+    {
+        public string ExceptionMessage { get; }
+
+        public ContainsAtLeastOneUppercaseCharacter()
+        {
+            ExceptionMessage = "Password should contain at least one uppercase character";
+        }
+
+        public bool ConditionToValidate(string password)
+        {
+            return password.Any(char.IsUpper);
+        }
+    }
+
+    public class ContainsAtLeastOneLowercaseCharacter : IRule
+    {
+        public string ExceptionMessage { get; }
+
+        public ContainsAtLeastOneLowercaseCharacter()
+        {
+            ExceptionMessage = "Password should contain at least one lowercase character";
+        }
+
+        public bool ConditionToValidate(string password)
+        {
+            return password.Any(char.IsLower);
+        }
+    }
+
+    public class ContainsAtLeastOneNumber : IRule
+    {
+        public string ExceptionMessage { get; }
+
+        public ContainsAtLeastOneNumber()
+        {
+            ExceptionMessage = "Password should contain at least one number";
+        }
+
+        public bool ConditionToValidate(string password)
+        {
+            return password.Any(char.IsNumber);
+        }
+    }
+    public class MoreThanEightCharacters : IRule
+    {
+        public string ExceptionMessage { get; }
+
+        public MoreThanEightCharacters()
+        {
+            ExceptionMessage = "Password should be at least 8 characters";
+        }
+
+        public bool ConditionToValidate(string password)
+        {
+            return password.Length > 8;
+        }
+    }
+
+    public interface IRule
+    {
+        string ExceptionMessage { get; }
+        bool ConditionToValidate(string conditionToTest);
+    }
+
+    [Serializable]
+    public class IncorrectPassword : Exception
+    { 
+
+        public IncorrectPassword(string message) : base(message)
+        {
+        }
+
     }
 }
