@@ -1,2 +1,2 @@
 # Testing.Katas.Example
-Tdd Kats Examples in c#
+Tdd Katas Examples in c#
