@@ -2,7 +2,7 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 
-namespace Testing.Katas.Example.Test
+namespace Testing.Katas.Example.NUnit
 {
     [TestFixture]
     [Category("PasswordVerifyerKata NET Core")]
