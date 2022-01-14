@@ -1,5 +1,6 @@
 # Testing.Katas.Example
 Tdd Katas Examples in c#
+Examples in [Nunit]([here](myLib/README.md))
 
 # Create a Password verifications class called “PasswordVerifier”.
 
