@@ -2,14 +2,10 @@
 {
     public class StringCalculator
     {
-        public int Add(string numbers)
+        public int Add(string stringValue)
         {
-            int calculateNumber = 0;
-
-            if (numbers == "1") calculateNumber = 1;
-            if (numbers == "2") calculateNumber = 2;
-
-            return calculateNumber;
+            if (stringValue == String.Empty) return 0;
+            return int.Parse(stringValue);
 
         }
     }
