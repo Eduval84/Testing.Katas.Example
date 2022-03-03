@@ -19,7 +19,7 @@ namespace Testing.Katas.Example.NUnit
 
         [Test]
         [TestCase("1", 1)]
-        public void should_return_a_number_when_string_contains_a_number(string input, int expectation)
+        public void should_return_a_number_1when_string_contains_a_number_1(string input, int expectation)
         {
 
             StringCalculator Calculator = new StringCalculator();
