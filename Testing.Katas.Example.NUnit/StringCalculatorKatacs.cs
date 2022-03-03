@@ -7,7 +7,19 @@ namespace Testing.Katas.Example.NUnit
 
         [Test]
         [TestCase("", 0)]
-        public void A_simple_string_will_return_0(string input, int expectation)
+        public void should_returs_zero_when_string_is_empty(string input, int expectation)
+        {
+
+            StringCalculator Calculator = new StringCalculator();
+            int result = Calculator.Add(input);
+
+            Assert.AreEqual(result, expectation);
+
+        }
+
+        [Test]
+        [TestCase("1", 1)]
+        public void should_return_a_number_when_string_contains_a_number(string input, int expectation)
         {
 
             StringCalculator Calculator = new StringCalculator();
