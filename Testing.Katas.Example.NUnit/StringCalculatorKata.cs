@@ -2,7 +2,7 @@
 
 namespace Testing.Katas.Example.NUnit
 {
-    public class StringCalculatorKatacs
+    public class StringCalculatorKata
     {
 
         [Test]
@@ -20,7 +20,7 @@ namespace Testing.Katas.Example.NUnit
         [Test]
         [TestCase("1", 1)]
         [TestCase("5", 5)]
-        [TestCase("10", 10)]
+        [TestCase("9", 9)]
         public void should_return_a_number_when_string_contains_a_number(string input, int expectation)
         {
 
