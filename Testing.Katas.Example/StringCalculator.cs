@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Testing.Katas.Example
+﻿namespace Testing.Katas.Example
 {
     public class StringCalculator
     {
-        public object Add(string input)
+        public int Add(string numbers)
         {
-            throw new NotImplementedException();
+            int calculateNumber = 0;
+            return calculateNumber;
+
         }
     }
 }

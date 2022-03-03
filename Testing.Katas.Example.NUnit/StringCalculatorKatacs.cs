@@ -7,12 +7,13 @@ namespace Testing.Katas.Example.NUnit
 
         [Test]
         [TestCase("", 0)]
-        private void A_simple_string_will_return_0(string input, int expectation)
+        public void A_simple_string_will_return_0(string input, int expectation)
         {
-            StringCalculator Calculator = new StringCalculator();
-            var result = Calculator.Add(input);
 
-            Assert.Equals(result, expectation);
+            StringCalculator Calculator = new StringCalculator();
+            int result = Calculator.Add(input);
+
+            Assert.AreEqual(result, expectation);
 
         }
 
