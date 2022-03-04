@@ -8,7 +8,7 @@
             if (stringValue.Length > 1)
             {
                 int sumNumbers = 0;
-                string[] numbers = SplitStringValue(stringValue);
+                string[] numbers = SplitStringValueWithCommasAndNewLinesDelimiters(stringValue);
                 foreach (string n in numbers)
                 {
                     sumNumbers += int.Parse(n);
@@ -20,10 +20,9 @@
 
         }
 
-        private static string[] SplitStringValue(string stringValue)
-        {
-            
-            return stringValue.Split(',');
+        private static string[] SplitStringValueWithCommasAndNewLinesDelimiters(string stringValue)
+        {            
+            return stringValue.Split(new Char [] {',' , '\n' });
         }
     }
 }
