@@ -33,6 +33,8 @@ namespace Testing.Katas.Example.NUnit
 
         [Test]
         [TestCase("1,1",2)]
+        [TestCase("2,1", 3)]
+        [TestCase("2,2", 4)]
         public void Should_return_the_sum_when_the_input_is_a_string_of_two_numbers_separated_by_commas(string input, int expectation)
         {
             StringCalculator Calculator = new StringCalculator();
