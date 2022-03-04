@@ -43,5 +43,16 @@ namespace Testing.Katas.Example.NUnit
             Assert.AreEqual(result, expectation);
         }
 
+        [Test]
+        [TestCase("1\n2", 3)]
+        [TestCase("1\n2,3", 6)]        
+        public void Should_return_the_sum_when_the_input_is_a_string_of_two_numbers_separated_by_new_lines(string input, int expectation)
+        {
+            StringCalculator Calculator = new StringCalculator();
+            int result = Calculator.Add(input);
+
+            Assert.AreEqual(result, expectation);
+        }
+
     }
 }
